@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('image_budget/budget_tracker_1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        main {
+            margin-top: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            width: 50%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #expenses-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .expense-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Budget Tracker</h1>
+        </header>
+        <main>
+            <form id="expense-form">
+
+                
+                    <div class="form-group">
+                        <label for="total-income">Total Available Income:</label>
+                        <input type="number" id="total-income" name="total-income" required>
+                    </div>
+
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" id="category" name="category" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <button type="submit">Add Expense</button>
+            </form>
+            <div id="expenses-list">
+                <!-- Expenses will be displayed here -->
+            </div>
+
+            
+
+            <script src="calculate.js" ></script>
+
+            <button id="myButton">Total Expenditure</button>
+            <script>
+                document.getElementById('myButton').addEventListener('click', showTotalSavingsAndExpenditure);
+            </script>
+
+            <canvas id="expense-chart" width="400" height="200"></canvas> <!-- Canvas for the chart -->
+<script>
+    var ctx = document.getElementById('expense-chart').getContext('2d');
+    var data = {
+        labels: [], // Array to store category names
+        datasets: [{
+            label: 'Expenses',
+            backgroundColor: [],
+            data: [],
+        }]
+    };
+
+    var config = {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    var myChart = new Chart(ctx, config);
+
+    document.getElementById('expense-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var categoryInput = document.getElementById('category').value;
+        var amountInput = parseFloat(document.getElementById('amount').value);
+
+        // Add the new data to the chart
+        myChart.data.labels.push(categoryInput);
+        myChart.data.datasets[0].data.push(amountInput);
+        myChart.data.datasets[0].backgroundColor.push(getRandomColor()); // Generate a random color
+        myChart.update();
+
+        // Clear the form inputs
+        document.getElementById('category').value = '';
+        document.getElementById('amount').value = '';
+        document.getElementById('date').value = '';
+    });
+
+    // Function to generate a random color
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
+
+    
+    <script>
+        // Check if the user is authenticated
+        if (!isAuthenticated()) {
+            // If not authenticated, redirect to the login page
+            window.location.href = 'login.html';
+        }
+
+        // Function to check if the user is authenticated
+        function isAuthenticated() {
+            // Check if the user is logged in by checking session storage or cookies
+            // For simplicity, let's assume we're using session storage with a key 'loggedIn'
+            return sessionStorage.getItem('loggedIn') === 'true';
+        }
+    </script>
+
+        </main>
+    </div>
+    <script src="script.js"></script>
+    
+</body>
+</html>
