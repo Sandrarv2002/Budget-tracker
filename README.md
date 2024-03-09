@@ -9,3 +9,4 @@ b. Tracker Page
 Other files: 
   -> budget.jpg - picture uploaded in login page
   -> calculate.js - this is the main logic of the budget tracking system. Here, the expenses incured are subtracted from the total income and the total savings and expenditure can be displayed at the end of every month. (this function is currently not working)
+  -> Script.js - This file contains the code required to create and manipulate the graph in our website.
