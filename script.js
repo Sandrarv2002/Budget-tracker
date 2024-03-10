@@ -1,48 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
     const expenseForm = document.getElementById('expense-form');
-    const expensesList = document.getElementById('expenses-list');
+    const expenseList = document.getElementById('expenseList');
+    const totalExpenses = document.getElementById('totalExpenses');
+    const incomeInput = document.getElementById('income');
+    const monthlySavings = document.getElementById('monthlySavings');
 
-    // Array to store expenses
     let expenses = [];
-
-    // Function to add expense
-    function addExpense(category, amount, date) {
-        const expenseItem = document.createElement('div');
-        expenseItem.classList.add('expense-item');
-        expenseItem.innerHTML = `
-            <p><strong>Category:</strong> ${category}</p>
-            <p><strong>Amount:</strong> $${amount.toFixed(2)}</p>
-            <p><strong>Date:</strong> ${date}</p>
-        `;
-        expensesList.appendChild(expenseItem);
-        expenses.push({ category, amount, date }); // Add expense to array
-        updateChart(); // Update the chart
-    }
+    let totalExpenseAmount = 0;
+    let income = 0;
 
     expenseForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
         const category = document.getElementById('category').value;
-        const amount = parseFloat(document.getElementById('amount').value);
-        const date = document.getElementById('date').value;
+        const amount = parseFloat(document.getElementById('expense').value);
 
-        if (category && amount && date) {
-            addExpense(category, amount, date);
+        if (category && amount) {
+            addExpense(category, amount);
             expenseForm.reset();
-        } else {
-            // alert('Please fill in all fields.');
         }
+        // Remove or comment out the alert message
+        // else {
+        //     alert('Please fill in both category and amount.');
+        // }
     });
 
-    // Function to update and display the chart
+    function addExpense(category, amount) {
+        // Append the new expense item to the list
+        const newExpenseItem = document.createElement('li');
+        newExpenseItem.innerHTML = `<strong>${category}:</strong> $${amount.toFixed(2)}`;
+        expenseList.appendChild(newExpenseItem);
+
+        // Update the total expenses
+        totalExpenseAmount += amount;
+        totalExpenses.textContent = `Total Expenses: $${totalExpenseAmount.toFixed(2)}`;
+
+        // Clear the expense input field
+        document.getElementById('expense').value = '';
+
+        // Calculate and update the monthly savings
+        calculateSavings();
+
+        // Update the chart
+        updateChart();
+    }
+
+    function calculateSavings() {
+        income = parseFloat(incomeInput.value);
+        if (!isNaN(income)) {
+            const savings = income - totalExpenseAmount;
+            monthlySavings.textContent = `Monthly Savings: $${savings.toFixed(2)}`;
+        }
+    }
+
     function updateChart() {
         const ctx = document.getElementById('expense-chart').getContext('2d');
 
-        // Extract data for the chart
         const categories = expenses.map(expense => expense.category);
         const amounts = expenses.map(expense => expense.amount);
 
-        // Create the chart
         new Chart(ctx, {
             type: 'bar',
             data: {
